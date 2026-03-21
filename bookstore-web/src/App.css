@@ -1,0 +1,7 @@
+.app-root {
+  background: linear-gradient(180deg, #f8f9fa 0%, #fff 12rem);
+}
+
+.book-list .table th {
+  white-space: nowrap;
+}
