@@ -12,6 +12,7 @@ export function CartPage() {
   } = useCart()
   const navigate = useNavigate()
 
+  // Go back to the catalog with the same filters you had when you last hit "Add".
   const continueShopping = () => {
     const qs = returnSearch.trim()
     navigate(qs ? `/?${qs}` : '/')

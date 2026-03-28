@@ -26,6 +26,7 @@ interface PagedBooksResponse {
 
 const PAGE_SIZE_OPTIONS = [5, 10, 15, 20] as const
 
+// Read ?page= style query params safely so bad values don't break the UI.
 function parsePositiveInt(s: string | null, fallback: number): number {
   if (s === null || s === '') return fallback
   const n = parseInt(s, 10)
@@ -33,6 +34,7 @@ function parsePositiveInt(s: string | null, fallback: number): number {
 }
 
 export function BookList() {
+  // Catalog filters live in the URL so refresh and "continue shopping" keep your place.
   const [searchParams, setSearchParams] = useSearchParams()
   const { addItem, lines, itemCount, grandTotal, lineSubtotal } = useCart()
 
@@ -51,6 +53,7 @@ export function BookList() {
   const [error, setError] = useState<string | null>(null)
   const [cartNotice, setCartNotice] = useState<string | null>(null)
 
+  // Tiny helper to update the address bar without losing other query keys.
   const patchParams = useCallback(
     (patch: Record<string, string | number | undefined>) => {
       const next = new URLSearchParams(searchParams)
@@ -100,6 +103,7 @@ export function BookList() {
       .finally(() => setLoading(false))
   }, [page, pageSize, sortTitle, category])
 
+  // If you switch category and the old page number is too high, jump to the last valid page.
   useEffect(() => {
     if (!data || data.totalPages < 1) return
     if (page > data.totalPages) {
@@ -240,6 +244,7 @@ export function BookList() {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Fake gray bars while we're waiting on the API (Bootstrap placeholders). */}
                     {loading &&
                       Array.from({ length: pageSize }).map((_, i) => (
                         <tr key={`sk-${i}`}>
@@ -396,7 +401,7 @@ export function BookList() {
       </div>
 
       <div className="col-12 col-lg-4 order-1 order-lg-2">
-        {/* #notcovered: sticky-top — keeps cart summary visible while scrolling the catalog */}
+        {/* sticky-top = this card stays on screen while you scroll the table on big screens */}
         <div className="sticky-top" style={{ top: '1rem' }}>
           <div className="card border-primary shadow-sm">
             <div className="card-header bg-primary text-white py-3">

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// Dev server: anything starting with /api goes to the .NET app so we don't need CORS while coding.
 export default defineConfig({
   plugins: [react()],
   server: {

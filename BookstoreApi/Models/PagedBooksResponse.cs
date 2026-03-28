@@ -9,8 +9,6 @@ public class PagedBooksResponse
     public int TotalPages { get; init; }
     public string SortTitle { get; init; } = "asc";
 
-    /// <summary>
-    /// When set, results are limited to this category; empty string means all categories.
-    /// </summary>
+    // Echoes what we filtered by (blank = everything).
     public string CategoryFilter { get; init; } = string.Empty;
 }

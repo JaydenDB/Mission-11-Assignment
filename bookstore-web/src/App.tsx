@@ -1,8 +1,4 @@
-/*
- * Learning Suite note for graders: #notcovered Bootstrap features (see BookList.tsx):
- * 1) sticky-top — keeps the cart summary column pinned while scrolling the catalog.
- * 2) placeholder + placeholder-glow — skeleton loading rows in the books table.
- */
+// Shell for every page: header, nav, footer, and a spot where the current route shows up.
 import { NavLink, Outlet, Route, Routes } from 'react-router-dom'
 import { BookList } from './components/BookList'
 import { CartPage } from './components/CartPage'
@@ -10,6 +6,7 @@ import { useCart } from './context/CartContext'
 import './App.css'
 
 function AppShell() {
+  // How many books are in the cart (used for the badge next to Cart).
   const { itemCount } = useCart()
 
   return (
@@ -56,6 +53,7 @@ function AppShell() {
         </div>
       </header>
       <main className="container flex-grow-1 pb-5">
+        {/* Child route renders here (home list or cart). */}
         <Outlet />
       </main>
       <footer className="border-top py-3 mt-auto bg-light">

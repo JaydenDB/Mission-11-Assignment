@@ -16,10 +16,7 @@ public class BooksController : ControllerBase
         _db = db;
     }
 
-    /// <summary>
-    /// Returns a page of books sorted by title. sortTitle: "asc" or "desc".
-    /// Optional category filters to that category (exact match).
-    /// </summary>
+    // Paged list of books, optional category filter, sorted by title A–Z or Z–A.
     [HttpGet]
     public async Task<ActionResult<PagedBooksResponse>> GetBooks(
         [FromQuery] int page = 1,
@@ -67,9 +64,7 @@ public class BooksController : ControllerBase
         });
     }
 
-    /// <summary>
-    /// Distinct book categories, sorted alphabetically.
-    /// </summary>
+    // One entry per category for the dropdown on the frontend.
     [HttpGet("categories")]
     public async Task<ActionResult<IReadOnlyList<string>>> GetCategories(
         CancellationToken cancellationToken = default)

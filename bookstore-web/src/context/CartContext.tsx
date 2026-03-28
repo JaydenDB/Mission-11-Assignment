@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from 'react'
 
+// Keys for sessionStorage so we don't clash with other sites in the same tab.
 const CART_KEY = 'bookstore-cart-v1'
 const RETURN_KEY = 'bookstore-return-v1'
 
@@ -24,6 +25,7 @@ export interface BookForCart {
   price: number
 }
 
+// Pull cart from the browser session (or start empty if nothing saved / bad data).
 function loadCart(): CartLine[] {
   try {
     const raw = sessionStorage.getItem(CART_KEY)
@@ -44,6 +46,7 @@ function loadCart(): CartLine[] {
   }
 }
 
+// Remember which catalog URL (query string) to go back to for "continue shopping".
 function loadReturnSearch(): string {
   try {
     return sessionStorage.getItem(RETURN_KEY) ?? ''
@@ -69,11 +72,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>(loadCart)
   const [returnSearch, setReturnSearch] = useState<string>(loadReturnSearch)
 
+  // Keep the cart in sync with sessionStorage whenever lines change.
   useEffect(() => {
     try {
       sessionStorage.setItem(CART_KEY, JSON.stringify(lines))
     } catch {
-      /* ignore quota / private mode */
+      // Storage might be full or blocked — cart still works until refresh.
     }
   }, [lines])
 
@@ -81,7 +85,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       sessionStorage.setItem(RETURN_KEY, returnSearch)
     } catch {
-      /* ignore */
+      // Same idea: don't crash if we can't write.
     }
   }, [returnSearch])
 
@@ -97,6 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [lines, lineSubtotal]
   )
 
+  // Bump qty if the book is already in the cart, otherwise add a new line.
   const addItem = useCallback((book: BookForCart, catalogSearchParams: string) => {
     setReturnSearch(catalogSearchParams)
     setLines((prev) => {

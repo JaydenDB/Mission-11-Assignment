@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.tsx'
 import { CartProvider } from './context/CartContext'
 
+// Router = URLs work; CartProvider = cart survives as you click around (sessionStorage).
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
