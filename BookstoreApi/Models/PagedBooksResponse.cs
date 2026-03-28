@@ -8,4 +8,9 @@ public class PagedBooksResponse
     public int PageSize { get; init; }
     public int TotalPages { get; init; }
     public string SortTitle { get; init; } = "asc";
+
+    /// <summary>
+    /// When set, results are limited to this category; empty string means all categories.
+    /// </summary>
+    public string CategoryFilter { get; init; } = string.Empty;
 }
