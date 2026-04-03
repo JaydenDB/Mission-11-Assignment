@@ -1,5 +1,6 @@
 // Shell for every page: header, nav, footer, and a spot where the current route shows up.
 import { NavLink, Outlet, Route, Routes } from 'react-router-dom'
+import { AdminBooks } from './components/AdminBooks'
 import { BookList } from './components/BookList'
 import { CartPage } from './components/CartPage'
 import { useCart } from './context/CartContext'
@@ -15,9 +16,9 @@ function AppShell() {
         <div className="container">
           <div className="row align-items-center g-3">
             <div className="col-12 col-md">
-              <h1 className="h3 mb-1">Mission 12 Bookstore</h1>
+              <h1 className="h3 mb-1">Mission 13 Bookstore</h1>
               <p className="mb-0 opacity-75 small">
-                Filter by category, page through results, and shop with a session cart.
+                Shop the catalog, use the cart, or manage books on the admin page.
               </p>
             </div>
             <div className="col-12 col-md-auto">
@@ -47,6 +48,14 @@ function AppShell() {
                     </span>
                   ) : null}
                 </NavLink>
+                <NavLink
+                  to="/adminbooks"
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? 'active bg-light text-primary' : 'text-white'}`
+                  }
+                >
+                  Admin
+                </NavLink>
               </nav>
             </div>
           </div>
@@ -71,6 +80,7 @@ function App() {
       <Route element={<AppShell />}>
         <Route path="/" element={<BookList />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/adminbooks" element={<AdminBooks />} />
       </Route>
     </Routes>
   )
