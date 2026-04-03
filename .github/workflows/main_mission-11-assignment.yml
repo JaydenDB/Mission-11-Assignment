@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - Mission-11-Assignment
 on:
   push:
     branches:
-      - main
+      - Mission 13
   workflow_dispatch:
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 'dotnet10.x'
+          dotnet-version: '10.0.x'
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
