@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/Bookstore.sqlite')">
+  <ItemGroup>
     <Content Include="Bookstore.sqlite" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
