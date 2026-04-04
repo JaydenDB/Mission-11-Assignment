@@ -1,0 +1,89 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - Mission-11-Assignment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Copy SQLite database into API project (if present at repo root)
+        shell: pwsh
+        run: |
+          if (Test-Path "Bookstore.sqlite") {
+            Copy-Item -Force "Bookstore.sqlite" "BookstoreApi/Bookstore.sqlite"
+          }
+
+      - name: Build React frontend
+        run: |
+          cd bookstore-web
+          npm ci
+          npm run build
+
+      - name: Copy React build to wwwroot
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path BookstoreApi/wwwroot
+          Copy-Item -Recurse -Force bookstore-web/dist/* BookstoreApi/wwwroot/
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish BookstoreApi/BookstoreApi.csproj -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  deploy:
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_039D329CD0314842B9A0EAFE0555C055 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_CE66542B80B3433CBA0592BD0C5FE22D }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_9F7093C51B8C4009B41C5F912599591D }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'Mission-11-Assignment'
+          slot-name: 'Production'
+          package: .
